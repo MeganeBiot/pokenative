@@ -4,6 +4,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import {ThemedText} from "@/components/ThemedText";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { Card } from "@/components/Card";
+import { PokemonCard } from "@/components/Pokemon/PokemonCard";
 
 
 export default function Index() {
@@ -24,9 +25,8 @@ export default function Index() {
           numColumns={3}
           columnWrapperStyle={styles.gridGap}
           contentContainerStyle={[styles.gridGap, styles.list]}
-          renderItem={({item}) => <Card style={{flex: 1/3, height: 200}} >
-            <Text>{item.name}</Text>
-          </Card>} keyExtractor={(item) => item.id.toString()}/>
+          renderItem={({item}) => <PokemonCard id={item.id} name={item.name} style={{flex: 1/3}} />} 
+          keyExtractor={(item) => item.id.toString()}/>
       </Card>
       </SafeAreaView>  
   );
@@ -52,6 +52,6 @@ const styles = StyleSheet.create({
   },
 
   list: {
-    padding: 12
+    padding: 12,
   }
 })

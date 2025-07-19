@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 const endpoint = "https://pokeapi.co/api/v2/"
 
@@ -7,10 +7,36 @@ export function useFetchQuery(path: string) {
         queryKey: [path],
         queryFn: async () => {
            await wait(1)
-           return fetch(endpoint + path).then(r => r.json())
+           return fetch(endpoint + path, {
+            headers: {
+                Accept: 'application/json'
+            }
+            }).then(r => r.json())
         }
     })
 }
+
+export function useInfiniteFetchQuery(path: string){
+    return useInfiniteQuery ({
+        queryKey: [path],
+        initialPageParam: endpoint + path,
+        queryFn: async ({pageParam}) => {
+            await wait(1)
+            return fetch(pageParam, {
+                headers: {
+                    Accept: 'application/json'
+                }
+            }).then(r => r.json())
+        },
+        getNextPageParam: (lastPage) => {
+            if ("next" in lastPage) {
+                return lastPage.next
+            }
+            return null
+        }
+    })
+}
+
 /** test debug */
 function wait (duration: number) {
     return new Promise (resolve => setTimeout(resolve, duration * 1000))

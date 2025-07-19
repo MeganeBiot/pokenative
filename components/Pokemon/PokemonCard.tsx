@@ -1,7 +1,8 @@
-import { Image, View, StyleSheet, ViewStyle } from "react-native";
+import { Image, View, StyleSheet, ViewStyle, Pressable } from "react-native";
 import { Card } from "@/components/Card";
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColors } from "@/hooks/useThemeColors";
+import { Link } from "expo-router";
 
 type Props = {
     style?: ViewStyle,
@@ -11,7 +12,9 @@ type Props = {
 
 export function PokemonCard ({style, id, name}: Props){
     const colors = useThemeColors()
-    return <Card style={[style, styles.card]}>
+    return <Link href={{pathname: "/pokemon/[id]", params: {id: id}}} asChild>
+    <Pressable style={style}>
+        <Card style={[styles.card]}>
         <View style={[styles.shadow, {backgroundColor: colors.grayBackground}]}/>
         <ThemedText style={styles.id} variant="caption" color="grayMedium">#{id.toString().padStart(3, '0')}</ThemedText>
         <Image
@@ -20,7 +23,9 @@ export function PokemonCard ({style, id, name}: Props){
             height={72}
         />
         <ThemedText>{name}</ThemedText>
-    </Card>
+        </Card>
+    </Pressable>
+    </Link>
 }
 
 const styles = StyleSheet.create({

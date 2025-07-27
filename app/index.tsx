@@ -17,6 +17,8 @@ export default function Index() {
   const {data, isFetching, fetchNextPage} = useInfiniteFetchQuery('/pokemon?limit=21')
   const pokemons = data?.pages.flatMap(page => page.results) ?? []
   const [search, setSearch] = useState('')
+  const filteredPokemons = search ? pokemons.filter (p => p.name.includes(search.toLowerCase()) || getPokemonId(p.url).toString() === search) : pokemons
+
   return (
     <SafeAreaView style={[styles.container, {backgroundColor: colors.tint}]}>
       <Row style={styles.header} gap={16}>
@@ -28,14 +30,14 @@ export default function Index() {
       </Row>
       <Card style={styles.body}>
           <FlatList 
-          data={pokemons} 
+          data={filteredPokemons} 
           numColumns={3}
           columnWrapperStyle={styles.gridGap}
           contentContainerStyle={[styles.gridGap, styles.list]}
           ListFooterComponent={
             isFetching ? <ActivityIndicator color={colors.tint}/> : null
           }
-          onEndReached={() =>fetchNextPage ()}
+          onEndReached={search ? undefined : () =>fetchNextPage ()}
           renderItem={({item}) => <PokemonCard id={getPokemonId(item.url)} name={item.name} style={{flex: 1/3}} />} 
           keyExtractor={(item) => item.url}/>
       </Card>
